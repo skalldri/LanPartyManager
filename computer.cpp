@@ -12,7 +12,6 @@ Computer::Computer(QWidget* parent)
     //bar->resize(
     socket = NULL;
     id = 0;
-
 }
 
 Computer * Computer::getNext()

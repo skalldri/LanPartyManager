@@ -115,36 +115,36 @@ MIB_IFTABLE * m_pTable;
 
 DWORD m_dwAdapters;
 
-    unsigned long long bytesTotal; //64 bits can suck it
-    int id;
-    QString ret;
-    QStringList files;
-    QStringList paths;
-    QStringList remPaths;
-    QString curDir;
-    QString workingDir = "/";
-    bool inEventLoop = false;
-    bool amIRite = false;
-    QString curRoot = "";
-    QString currentDir;
-    qint64 total = 100;
-    qint64 current = 0;
-    QList<QHostAddress> broadcastAddresses;
-    QList<QHostAddress> ipAddresses;
-    QList<QTreeWidgetItem*> fileList;
-    QList<QCheckBox*> boxList;
+unsigned long long bytesTotal; //64 bits can suck it
+int id;
+QString ret;
+QStringList files;
+QStringList paths;
+QStringList remPaths;
+QString curDir;
+QString workingDir = "/";
+bool inEventLoop = false;
+bool amIRite = false;
+QString curRoot = "";
+QString currentDir;
+qint64 total = 100;
+qint64 current = 0;
+QList<QHostAddress> broadcastAddresses;
+QList<QHostAddress> ipAddresses;
+QList<QTreeWidgetItem*> fileList;
+QList<QCheckBox*> boxList;
 
-     QString releaseVer = "1.5.8";
-     QString releaseType = "Beta";
+QString releaseVer = "1.5.8";
+QString releaseType = "Beta";
 
 
-    //setup main varibles, settings
-    int udpBroadcastRate = 1000;
-    int tcpCheckRate = 5000;
-    int standardUdpPort = 45454;
-    int standardTcpPort = 1337;
-    int networkUpdateRate = 1000;
-    bool debugMode = true;
+//setup main varibles, settings
+int udpBroadcastRate = 1000;
+int tcpCheckRate = 5000;
+int standardUdpPort = 45454;
+int standardTcpPort = 1337;
+int networkUpdateRate = 1000;
+bool debugMode = true;
 
 
 Widget::Widget()
@@ -175,43 +175,41 @@ Widget::Widget()
     }
     else
     {
-
-            udpBroadcastRate = setup->value("udpBroadcast", 1000).toInt();
-
-            tcpCheckRate = setup->value("tcpBroadcast", 5000).toInt();
-
-            standardUdpPort = setup->value("udpPort", 45454).toInt();
-
-            standardTcpPort = setup->value("tcpPort", 1337).toInt();
-
-            debugMode = setup->value("debug", false).toBool();
-
-            //releaseType = setup->value("releaseType", "").toString();
-
-            //releaseVer = setup->value("releaseVer", "").toString();
-
-            networkUpdateRate = setup->value("networkUpdateRate", 1000).toInt();
+		udpBroadcastRate = setup->value("udpBroadcast", 1000).toInt();
+		tcpCheckRate = setup->value("tcpBroadcast", 5000).toInt();
+		standardUdpPort = setup->value("udpPort", 45454).toInt();
+		standardTcpPort = setup->value("tcpPort", 1337).toInt();
+		debugMode = setup->value("debug", false).toBool();
+		//releaseType = setup->value("releaseType", "").toString();
+		//releaseVer = setup->value("releaseVer", "").toString();
+		networkUpdateRate = setup->value("networkUpdateRate", 1000).toInt();
     }
 
     settings = new QWidget(mainWindow, Qt::Dialog);
     settings->resize(300, 300);
     settings->setWindowTitle("Settings");
     settings->hide();
+	
     QLabel * la = new QLabel(settings);
     la->move(15, 15);
     la->setText("UDP Broadcast Delay");
+	
     QLabel * lb = new QLabel(settings);
     lb->move(15, 45);
     lb->setText("TCP Broadcast Delay");
+	
     QLabel * lc = new QLabel(settings);
     lc->move(15, 75);
     lc->setText("Default UDP Port (Advanced)");
+	
     QLabel * ld = new QLabel(settings);
     ld->move(15, 105);
     ld->setText("Default TCP Port (Advanced)");
+	
     QLabel * le = new QLabel(settings);
     le->move(15, 165);
     le->setText("Debug Mode");
+	
     QLabel * lf = new QLabel(settings);
     lf->move(15, 135);
     lf->setText("Total Bytes Refresh Rate");
@@ -236,7 +234,6 @@ Widget::Widget()
     nDelay->setGeometry(200, 135, 50, 20);
     nDelay->setText(QString().number(networkUpdateRate));
 
-
     debugOn = new QCheckBox(settings);
     debugOn->move(200, 165);
     debugOn->setChecked(debugMode);
@@ -245,7 +242,6 @@ Widget::Widget()
     apply->setGeometry(200, 200, 60, 30);
     apply->setText("Apply");
     QObject::connect(apply, SIGNAL(clicked()), this, SLOT(apply()));
-
 
     QWidget * passWindow = new QWidget(mainWindow, Qt::Tool);
     passWindow->resize(200, 80);
@@ -267,7 +263,6 @@ Widget::Widget()
     QObject::connect(passBox, SIGNAL(returnPressed()), this, SLOT(passEnter()));
     QObject::connect(passBox, SIGNAL(returnPressed()), passWindow, SLOT(hide()));
 
-
     icon = new QIcon(":/images/icon.png");
     sysIcon = new QSystemTrayIcon(*icon, this);
     sysIcon->show();
@@ -281,7 +276,6 @@ Widget::Widget()
     {
 		sysIcon->showMessage("System Tray Error", "Window Respawn Connection Failed", QSystemTrayIcon::Information, 10000 );
     }
-
 
 	QMenu* file = mainWindow->menuBar()->addMenu(tr("&File"));
 	QMenu* help = mainWindow->menuBar()->addMenu(tr("&Help"));
@@ -312,11 +306,9 @@ Widget::Widget()
     server = new QPushButton(mainWindow);
     client = new QPushButton(mainWindow);
 
-
     log = new QFile("log.txt");
     currentTime = new QDateTime(); //create the log timestamp
     *currentTime = QDateTime::currentDateTime(); //get system time
-
 
     if(!log->open(QIODevice::ReadWrite|QIODevice::Append))
     {
@@ -325,8 +317,8 @@ Widget::Widget()
 
     if(debugMode)
     {
-    writeLog("LanMan " + releaseType + " " + releaseVer + " Logfile Start");
-    writeLog("Time Format is: DD/MM/YYYY - HOUR:MIN:SEC AM/PM");
+		writeLog("LanMan " + releaseType + " " + releaseVer + " Logfile Start");
+		writeLog("Time Format is: DD/MM/YYYY - HOUR:MIN:SEC AM/PM");
     }
 
     server->setGeometry(10, 30, 100, 30);
@@ -348,6 +340,7 @@ Widget::~Widget()
 
 }
 
+//I don't even... what? Why is this here... I don't even remember
 Widget::Mode Widget::getMode()
 {
     return Widget::Client;
@@ -361,7 +354,6 @@ void Widget::writeLog(QString input)
 
 void Widget::about()
 {
-
     QMessageBox::about( mainWindow, "About LanMan " + releaseType + " " + releaseVer, "LanMan is a Lan Party Manager currently capable of auto file sync, hostname identification, automatic network testing and other things. This is build " + releaseType + " " + releaseVer);
 }
 
@@ -369,14 +361,13 @@ void Widget::iconClicked(QSystemTrayIcon::ActivationReason reason)
 {
     if(reason == QSystemTrayIcon::Trigger)
     {
-    mainWindow->show();
-    normal();
+		mainWindow->show();
+		normal();
     }
 }
 
 void Widget::close()
 {
-
     setup->setValue("udpBroadcast", udpBroadcastRate);
     setup->setValue("tcpBroadcast", tcpCheckRate);
     setup->setValue("udpPort", standardUdpPort);
@@ -389,41 +380,27 @@ void Widget::close()
     log->close();
     sysIcon->hide();
     sysIcon->~QSystemTrayIcon();
-
 }
 
 void Widget::settingsWindow()
 {
-
     uPort->setText(QString().number(standardUdpPort));
-
     tPort->setText(QString().number(standardTcpPort));
-
     uDelay->setText(QString().number(udpBroadcastRate));
-
     tDelay->setText(QString().number(tcpCheckRate));
-
     debugOn->setChecked(debugMode);
-
     nDelay->setText(QString().number(networkUpdateRate));
-
     settings->show();
 }
 
 void Widget::apply()
 {
     standardUdpPort = uPort->text().toInt();
-
     standardTcpPort = tPort->text().toInt();
-
     udpBroadcastRate = uDelay->text().toInt();
-
     tcpCheckRate = tDelay->text().toInt();
-
     debugMode = debugOn->isChecked();
-
     networkUpdateRate = nDelay->text().toInt();
-
     settings->show();
 }
 
@@ -438,14 +415,16 @@ void Widget::normal()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////SERVER FUNCTIONS//////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void Widget::passEnter()
 {
     checkPassword(passBox->text().toAscii());
 }
 
+//Hah. This "password" actually doesn't give any real security. The idea was that me (the programmer) would distribute a hash to the host which would allow only one person to become a server.
+//In reality, this never got implemented correctly, so all it does is prevent the client becomming a server without a correct hash file / password pair
 void Widget::checkPassword(QByteArray pass)
 {
 #ifndef DEBUG
@@ -478,130 +457,125 @@ void Widget::checkPassword(QByteArray pass)
 
 void Widget::startServer()
 {
+	#ifdef WIN32
+		//Initialize WINSOCK because CFTPServer needs it on Windows
+		
+		WSADATA WSAData;
+		if( WSAStartup( MAKEWORD(1, 0), &WSAData) != 0 ) {
+			//printf("-WSAStartup failure: WSAGetLastError=%d\r\n", WSAGetLastError() );
+			QMessageBox::information(0, "Error", "Winsock error: " + WSAGetLastError());
+			 //return 0;
+		}
+	#endif
 
-#ifdef WIN32
-    WSADATA WSAData;
-    if( WSAStartup( MAKEWORD(1, 0), &WSAData) != 0 ) {
-            //printf("-WSAStartup failure: WSAGetLastError=%d\r\n", WSAGetLastError() );
-        QMessageBox::information(0, "Error", "Winsock error: " + WSAGetLastError());
-           // return 0;
-    }
-#endif
+	QString dir = qApp->applicationDirPath();
 
+	if(QDir().exists("/Sync") == false)
+	{
+		QDir().mkdir(dir + "/Sync");
+	}
+	
+	//Begin FTP Server Initialization
+	ftpServer = new CFtpServer();
+	ftpServer->SetDataPortRange(100, 900);
 
-QString dir = qApp->applicationDirPath();
+	CFtpServer::CUserEntry *FtpUser = ftpServer->AddUser("lanclient", "tseug", QString(dir + "/Sync").toAscii());
+	ftpServer->AddUser("anonymous", NULL, "C:\\dir");
 
-if(QDir().exists("/Sync") == false)
-{
-    QDir().mkdir(dir + "/Sync");
-}
+	if(FtpUser)
+	{
+		FtpUser->SetMaxNumberOfClient( 0 );
+		FtpUser->SetPrivileges( CFtpServer::READFILE | CFtpServer::WRITEFILE |
+								CFtpServer::LIST | CFtpServer::DELETEFILE | CFtpServer::CREATEDIR |
+								CFtpServer::DELETEDIR );
+	}
+	else
+	{
+		writeLog("FTP Server Could Not Create User");
+		sysIcon->showMessage("FTP Error", "No user could be created on the FTP Server. Login Not Possible", QSystemTrayIcon::Critical, 10000 );
+		error();
+	}
+	if(ftpServer->StartListening(INADDR_ANY, 21))
+	{
+	   if(ftpServer->StartAccepting() == false)
+		{
+			writeLog("FTP Server Could Not Begin Accepting on Port 21. Code corruption or incompatible dll");
+			sysIcon->showMessage("FTP Error", "FTP Server Couldn't start accepting connections.", QSystemTrayIcon::Critical, 10000 );
+			error();
+		}
+	}
+	else
+	{
+		writeLog("FTP Server Could Not Start Listening On Port 21. Check WINSOCK. This application does not support concurrent instances.");
+		sysIcon->showMessage("FTP Error", "FTP Server Couldn't Listen on port 21. It may be in use already.", QSystemTrayIcon::Critical, 10000 );
+		error();
+	}
 
-/*
+	/*
+	End FTP Server Initialization
+	All Files in the applications working directory are now availible through FTP with user "lanclient" with pass "tseug"
+	*/
 
-Begin FTP Server Initialization
+	client->setEnabled(false);
+	udpSocket->bind(QHostAddress::Any, standardUdpPort, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+	connect(udpSocket, SIGNAL(readyRead()), this, SLOT(signalReceived()));
 
-*/
-ftpServer = new CFtpServer();
-ftpServer->SetDataPortRange(100, 900);
+	//resize the mainWindow because we need a bigger interface for server mode
+	mainWindow->resize(600, 500);
 
-CFtpServer::CUserEntry *FtpUser = ftpServer->AddUser("lanclient", "tseug", QString(dir + "/Sync").toAscii());
-ftpServer->AddUser("anonymous", NULL, "C:\\dir");
+	//create the tab-widget that we parent the sub-windows too
+	computerManager = new QTabWidget(mainWindow);
+	computerManager->setGeometry(5, 70, 590, 430);
 
-if(FtpUser)
-{
-                FtpUser->SetMaxNumberOfClient( 0 );
-                FtpUser->SetPrivileges( CFtpServer::READFILE | CFtpServer::WRITEFILE |
-                                        CFtpServer::LIST | CFtpServer::DELETEFILE | CFtpServer::CREATEDIR |
-                                        CFtpServer::DELETEDIR );
-}
-else
-{
-    writeLog("FTP Server Could Not Create User");
-     sysIcon->showMessage("FTP Error", "No user could be created on the FTP Server. Login Not Possible", QSystemTrayIcon::Critical, 10000 );
-     error();
-}
-if(ftpServer->StartListening(INADDR_ANY, 21))
-{
-   if(ftpServer->StartAccepting() == false)
-    {
-        writeLog("FTP Server Could Not Begin Accepting on Port 21. Code corruption or incompatible dll");
-        sysIcon->showMessage("FTP Error", "FTP Server Couldn't start accepting connections.", QSystemTrayIcon::Critical, 10000 );
-        error();
-    }
-}
-else
-{
-    writeLog("FTP Server Could Not Start Listening On Port 21. Check WINSOCK. This application does not support concurrent instances.");
-    sysIcon->showMessage("FTP Error", "FTP Server Couldn't Listen on port 21. It may be in use already.", QSystemTrayIcon::Critical, 10000 );
-    error();
-}
+	primaryStatus = new QWidget(computerManager);
+	ftpWindow = new QWidget(computerManager);
+	serverDownload = new QPushButton(ftpWindow);
+	serverDownload->setGeometry(20, 355, 545, 45);
 
-/*
-End FTP Server Initialization
-All Files in the applications working directory are now availible through FTP with user "lanclient" with pass "tseug"
-*/
+	QObject::connect(serverDownload, SIGNAL(clicked()), this, SLOT(serverDownloadStart()));
 
+	computersConnected = 0;
 
+	ftpFiles = new QTreeWidget(ftpWindow);
+	ftpFiles->setGeometry(0, 0, 580, 350);
 
-client->setEnabled(false);
-udpSocket->bind(QHostAddress::Any, standardUdpPort, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-connect(udpSocket, SIGNAL(readyRead()), this, SLOT(signalReceived()));
+	fileModel = new QTreeWidgetItem(0);
 
-//resize the mainWindow because we need a bigger interface for server mode
-mainWindow->resize(600, 500);
+	computerNames.append("Files");
 
-//create the tab-widget that we parent the sub-windows too
-computerManager = new QTabWidget(mainWindow);
-computerManager->setGeometry(5, 70, 590, 430);
+	ftpFiles->setHeaderLabels(computerNames);
 
+	computerManager->addTab(primaryStatus, "Network Status");
+	computerManager->addTab(ftpWindow, "File Control");
 
-primaryStatus = new QWidget(computerManager);
-ftpWindow = new QWidget(computerManager);
-serverDownload = new QPushButton(ftpWindow);
-serverDownload->setGeometry(20, 355, 545, 45);
+	mapper = new QSignalMapper(this);
+	
+	computerTable = new QTreeWidget(primaryStatus);
+	computerTable->setGeometry(0, 0, 580, 400);
+	
+	QTreeWidgetItem * compModel = new QTreeWidgetItem(0);
+	compModel->setText(0, "Name");
+	compModel->setText(1,"Bytes Total");
+	compModel->setText(2, "Active");
+	
+	computerTable->setHeaderItem(compModel);
+	computerTable->setColumnCount(3);
+	computerTable->setColumnWidth(0, 150);
+	computerTable->setColumnWidth(1, 120);
+	computerTable->setColumnWidth(2, 305);
+	computerTable->show();
+	
+	timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 
-QObject::connect(serverDownload, SIGNAL(clicked()), this, SLOT(serverDownloadStart()));
+	fileWatcher = new QFileSystemWatcher(this);
+	fileWatcher->addPath(dir + "/Sync");
+	connect(fileWatcher, SIGNAL(directoryChanged(QString)), this, SLOT(sendUpdate()));
 
-computersConnected = 0;
+	timer->start(tcpCheckRate);
 
-ftpFiles = new QTreeWidget(ftpWindow);
-ftpFiles->setGeometry(0, 0, 580, 350);
-
-fileModel = new QTreeWidgetItem(0);
-
-computerNames.append("Files");
-
-ftpFiles->setHeaderLabels(computerNames);
-
-computerManager->addTab(primaryStatus, "Network Status");
-computerManager->addTab(ftpWindow, "File Control");
-
-mapper = new QSignalMapper(this);
-computerTable = new QTreeWidget(primaryStatus);
-computerTable->setGeometry(0, 0, 580, 400);
-QTreeWidgetItem * compModel = new QTreeWidgetItem(0);
-compModel->setText(0, "Name");
-compModel->setText(1,"Bytes Total");
-compModel->setText(2, "Active");
-computerTable->setHeaderItem(compModel);
-computerTable->setColumnCount(3);
-computerTable->setColumnWidth(0, 150);
-computerTable->setColumnWidth(1, 120);
-computerTable->setColumnWidth(2, 305);
-computerTable->show();
-timer = new QTimer(this);
-connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-
-fileWatcher = new QFileSystemWatcher(this);
-
-fileWatcher->addPath(dir + "/Sync");
-
-connect(fileWatcher, SIGNAL(directoryChanged(QString)), this, SLOT(sendUpdate()));
-
-timer->start(tcpCheckRate);
-
-computerManager->show();
-updateFileTable();
+	computerManager->show();
+	updateFileTable();
 }
 
 void Widget::generateBoxLayout(QTreeWidgetItem * item)
@@ -1148,10 +1122,9 @@ Network Command List:
                 STOP : Stops all current operations
 */
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////// CLIENT FUNCTIONS START HERE/////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Widget::startClient()
@@ -1319,47 +1292,42 @@ unsigned long long Widget::bytesIn()
 {
     unsigned long long bytes = 0;
     unsigned long long transit = 0;
-                pGetIfTable(m_pTable,&m_dwAdapters,TRUE);
+	pGetIfTable(m_pTable,&m_dwAdapters,TRUE);
 
-
-
-                for (UINT i=0;i<m_pTable->dwNumEntries;i++)
-                        {
-                                MIB_IFROW Row=m_pTable->table[i];
-                                if(Row.dwType == 6||Row.dwType == 71)
-                                {
-                                transit = Row.dwInOctets;
-                                bytes = bytes + transit;
-                                }
-                         }
-return bytes;
+	for (UINT i=0;i<m_pTable->dwNumEntries;i++)
+	{
+		MIB_IFROW Row=m_pTable->table[i];
+		if(Row.dwType == 6||Row.dwType == 71)
+		{
+			transit = Row.dwInOctets;
+			bytes = bytes + transit;
+		}
+	 }
+	return bytes;
 }
 
 unsigned long long Widget::bytesOut()
 {
     unsigned long long bytes = 0;
     unsigned long long transit = 0;
-                pGetIfTable(m_pTable,&m_dwAdapters,TRUE);
+	pGetIfTable(m_pTable,&m_dwAdapters,TRUE);
 
-                MIB_IFROW Row=m_pTable->table[1];
+	MIB_IFROW Row=m_pTable->table[1];
 
-
-                for (UINT i=0;i<m_pTable->dwNumEntries;i++)
-                        {
-                                MIB_IFROW Row=m_pTable->table[i];
-                                if(Row.dwType == 6||Row.dwType == 71)
-                                {
-                                transit = Row.dwOutOctets;
-                                bytes = bytes + transit;
-                            }
-                         }
+	for (UINT i=0;i<m_pTable->dwNumEntries;i++)
+	{
+		MIB_IFROW Row=m_pTable->table[i];
+		if(Row.dwType == 6||Row.dwType == 71)
+		{
+			transit = Row.dwOutOctets;
+			bytes = bytes + transit;
+		}
+	 }
     return bytes;
 }
 
 void Widget::clientReceived()
 {
-
-
     QByteArray datab = tcpSocket->read(tcpSocket->bytesAvailable());
     QString data = QString(datab);
 
@@ -1374,82 +1342,80 @@ void Widget::clientReceived()
     foreach(QString str, commands)
         writeLog(str);
 
- for(int i = 0; i <= commands.length(); i++)
- {
-       writeLog(datac);
-       if(datac == "REDY")
-       {
-           // This message indicates that the computer was added sucessfully.
-       }
-       else if(datac == "RPRT")
-       {
-           tcpSocket->write(QByteArray("BAND::" + QString().setNum(bytesIn() + bytesOut()).toAscii()));
-           tcpSocket->write(QByteArray("HOST::" + ret.toAscii()));
-           tcpSocket->write(QByteArray("BTOT::" + QString().setNum(total).toAscii()));
-           tcpSocket->write(QByteArray("BCUR::" + QString().setNum(current).toAscii()));
-       }
-       else if(datac == "SHDN")
-       {
-           // Do nothing(FOR NOW MUAH HA HA)
-       }
-       else if(datac == "RSRT")
-       {
-           // Do Nothing
-       }
-       else if(datac == "ROUT")
-       {
-           tcpSocket->write(QByteArray("BOUT::" + QString().setNum(bytesOut()).toAscii()));
-       }
-       else if(datac == "RQIN")
-       {
-           tcpSocket->write(QByteArray("BDIN::" + QString().setNum(bytesIn()).toAscii()));
-       }
-       else if(datac == "RHST")
-       {
-           tcpSocket->write(QByteArray("HOST::" + ret.toAscii()));
-       }
-       else if(datac == "PING")
-       {
-           tcpSocket->write(QByteArray("PING::"));
-       }
-       else if(datac == "UPDT")
-       {
-           updateList();
-       }
-       else if(datac == "ADFL::")
-       {
-           writeLog("ADFL DETECTED");
-           remPaths.append(commands.at(i));
-       }
-       else if(datac == "DNLD::")
-       {
-           writeLog("DOWNLOAD DETECTED");
-           QStringList temp = paths;
-           paths = remPaths;
-           getFirst();
-           //paths = temp;
+	for(int i = 0; i <= commands.length(); i++)
+	{
+		writeLog(datac);
+		if(datac == "REDY")
+		{
+			// This message indicates that the computer was added sucessfully.
+		}
+		else if(datac == "RPRT")
+		{
+			tcpSocket->write(QByteArray("BAND::" + QString().setNum(bytesIn() + bytesOut()).toAscii()));
+			tcpSocket->write(QByteArray("HOST::" + ret.toAscii()));
+			tcpSocket->write(QByteArray("BTOT::" + QString().setNum(total).toAscii()));
+			tcpSocket->write(QByteArray("BCUR::" + QString().setNum(current).toAscii()));
+		}
+		else if(datac == "SHDN")
+		{
+			// Do nothing(FOR NOW MUAH HA HA)
+		}
+		else if(datac == "RSRT")
+		{
+			// Do Nothing
+		}
+		else if(datac == "ROUT")
+		{
+			tcpSocket->write(QByteArray("BOUT::" + QString().setNum(bytesOut()).toAscii()));
+		} 
+		else if(datac == "RQIN")
+		{
+			tcpSocket->write(QByteArray("BDIN::" + QString().setNum(bytesIn()).toAscii()));
+		}
+		else if(datac == "RHST")
+		{
+			tcpSocket->write(QByteArray("HOST::" + ret.toAscii()));
+		}
+		else if(datac == "PING")
+		{
+		   tcpSocket->write(QByteArray("PING::"));
+		}
+		else if(datac == "UPDT")
+		{
+			updateList();
+		}
+		else if(datac == "ADFL::")
+		{
+			writeLog("ADFL DETECTED");
+			remPaths.append(commands.at(i));
+		}
+		else if(datac == "DNLD::")
+		{
+			writeLog("DOWNLOAD DETECTED");
+			QStringList temp = paths;
+			paths = remPaths;
+			getFirst();
+			//paths = temp;
 
-       }
-       else if(datac == "STOP")
-       {
-           ftpClient->abort();
-       }
+		}
+		else if(datac == "STOP")
+		{
+			ftpClient->abort();
+		}
 
-       if(commands.length() > 1 && i != commands.length())
-          {
-           datac = data;
-           datac.remove(0,6 + commands.at(i).length());
-           data = datac;
-           datac.truncate(6);
-          }
-   }
-
+	   if(commands.length() > 1 && i != commands.length())
+	   {
+		   datac = data;
+		   datac.remove(0,6 + commands.at(i).length());
+		   data = datac;
+		   datac.truncate(6);
+	   }
+	}
 }
 
 QString Widget::search(QString fileName, QString dir)
 {
-  QDirIterator directoryWalker(dir, QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-
+    QDirIterator directoryWalker(dir, QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
     while(directoryWalker.hasNext() && directoryWalker.fileName() != fileName)
     {
          directoryWalker.next();
@@ -1499,16 +1465,15 @@ void Widget::ftpDone(bool errorb)
        error();
     }
 
-
     if(!files.isEmpty())
     {
-    ftpClient->cd("/");
-    QStringList test = files;
-    inEventLoop = true;
-    amIRite = false;
-    ftpClient->list(files.at(0));
-    curDir = files.at(0);
-    files.removeAt(0);
+		ftpClient->cd("/");
+		QStringList test = files;
+		inEventLoop = true;
+		amIRite = false;
+		ftpClient->list(files.at(0));
+		curDir = files.at(0);
+		files.removeAt(0);
     }
     else
     {
@@ -1516,7 +1481,7 @@ void Widget::ftpDone(bool errorb)
     }
     if(debugMode)
     {
-       writeLog("FTP Reported Done Message");
+        writeLog("FTP Reported Done Message");
     }
 
 }
@@ -1562,9 +1527,9 @@ void Widget::getFirst()
         else
         {
             if(workingDir != "/")
-                {
-                ftpClient->cd("/");
-                }
+			{
+				ftpClient->cd("/");
+			}
             if(dirs.at(0) != "")
             {
                 ftpClient->cd(dirs.at(0));
@@ -1581,8 +1546,6 @@ void Widget::getFirst()
         updateList();
     }
 }
-
-
 
 void Widget::getSelected()
 {
@@ -1622,11 +1585,11 @@ void Widget::ftpCommandDone(int, bool errorb)
             delete file;
             getFirst();
         }
-
-    if (ftpClient->currentCommand() == QFtp::List)
-    {
-    }
-}
+		if (ftpClient->currentCommand() == QFtp::List)
+		{
+			//Do nothing
+		}
+	}
 }
 
 void Widget::updateList()
